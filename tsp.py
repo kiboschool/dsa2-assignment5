@@ -23,9 +23,13 @@ class TSP:
             print(" ".join(map(str, row)))
 
     def __total_distance_permutation(self, permutation):
-        # Task 1: compute the total distance represented by this permutation.
-        # Example input: [0, 1, 2, 3, 0]
-        return 0
+        total_distance = 0
+        num_cities = len(permutation)
+
+        for i in range(num_cities - 1):
+            total_distance += self.adjacency_matrix[permutation[i]][permutation[i + 1]]
+
+        return total_distance
 
     def brute_force(self):
         num_cities = len(self.adjacency_matrix)
@@ -55,7 +59,23 @@ class TSP:
         current_city = 0
         total_distance = 0
 
-        # Task 2: implement the nearest neighbor algorithm starting
-        # from vertex 0.
+        for _ in range(num_vertices):
+            tour.append(current_city)
+            visited[current_city] = True
+            nearest_distance = float('inf')
+            nearest_city = None
+            for next_city in range(num_vertices):
+                if visited[next_city]:
+                    continue
+                if 0 < self.adjacency_matrix[current_city][next_city] < nearest_distance:
+                    nearest_distance = self.adjacency_matrix[current_city][next_city]
+                    nearest_city = next_city
+            if nearest_city is not None:
+                total_distance += nearest_distance
+                current_city = nearest_city
+
+        # Return to the starting city
+        total_distance += self.adjacency_matrix[current_city][tour[0]]
+        tour.append(tour[0])
 
         return tour, total_distance
